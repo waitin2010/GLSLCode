@@ -1,0 +1,61 @@
+cmake_minimum_required (VERSION 2.6)
+set (AppName GLSL)
+
+project (${AppName})
+
+set (Path "${PROJECT_SOURCE_DIR}")
+set (EXECUTABLE_OUTPUT_PATH "${CMAKE_BINARY_DIR}/bin")
+#configure a header file to pass the directory to the 
+# source code
+configure_file (
+	"${PROJECT_SOURCE_DIR}/Directory.h.in"
+	"${PROJECT_SOURCE_DIR}/thirdLib/Directory.h"
+)
+include_directories ("${PROJECT_SOURCE_DIR}/shadowmap")
+include_directories ("${PROJECT_SOURCE_DIR}/softshadowmap")
+include_directories ("${PROJECT_SOURCE_DIR}/thirdLib")
+include_directories ("${PROJECT_SOURCE_DIR}/utils")
+
+link_directories("${PROJECT_SOURCE_DIR}/thirdLib")
+
+
+
+
+add_subdirectory (animation)
+add_subdirectory (ambientocclusion)
+add_subdirectory (bloom)
+add_subdirectory (cartoon)
+add_subdirectory (defferedRender)
+add_subdirectory (directionalLight)
+add_subdirectory (discardversion)
+add_subdirectory (disintegration)
+add_subdirectory (edgedetection)
+add_subdirectory (environmentmap)
+add_subdirectory (fog)
+add_subdirectory (FrameWork) 
+add_subdirectory (gammacorrection)
+add_subdirectory (gaussianBlur)
+add_subdirectory (multipositionallight)
+add_subdirectory (night)
+add_subdirectory (nightvision)
+add_subdirectory (normalmap)
+add_subdirectory (paintSpatter)
+add_subdirectory (particlesystem)
+add_subdirectory (particlesystemnontransback)
+add_subdirectory (particlesystemtransback)
+add_subdirectory (phoneShading)
+add_subdirectory (projectiontexture)
+add_subdirectory (rendertoTexture)
+add_subdirectory (shadowmap)
+add_subdirectory (smoke)
+add_subdirectory (softshadowmap)
+add_subdirectory (skyClound)
+add_subdirectory (spotlight)
+add_subdirectory (subroutine)
+add_subdirectory (texture)
+add_subdirectory (utils)
+add_subdirectory (woodTexture)
+
+INSTALL(DIRECTORY data DESTINATION "${PROJECT_BINARY_DIR}/bin/Debug")
+INSTALL(DIRECTORY shader DESTINATION "${PROJECT_BINARY_DIR}/bin/Debug")
+INSTALL(DIRECTORY thirdLib/bin/ DESTINATION "${PROJECT_BINARY_DIR}/bin/Debug")
