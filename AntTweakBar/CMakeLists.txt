@@ -4,7 +4,7 @@ set (AppName AntTweakBar)
 project (${AppName})
 
 set (SHADER_DIR "${Path}/shader")
-set (GL_SHADER_GTC "${AppName}.vert" "${AppName}.frag")
+set (GL_SHADER_GTC "${AppName}.vert" "${AppName}.frag" )
 
 foreach(FILE ${GL_SHADER_GTC})
 		set(SHADER_PATH ${SHADER_PATH} ${SHADER_DIR}/${FILE})

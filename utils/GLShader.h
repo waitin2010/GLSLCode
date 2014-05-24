@@ -13,6 +13,7 @@ using  glm::mat3;
 class   GLShader {
 public:
 	GLShader();
+	GLShader(char *csfilename);
 	~GLShader();
 	GLShader(char *vsfilename, char *fsfilename);
 	void begin();
@@ -28,7 +29,7 @@ public:
 	void setUniform(char *name, mat4 m);
 
 private:
-	GLuint ps, vs,fs;
+	GLuint ps, vs,fs,cs;
 	std::map<std::string ,GLint> uniformLocation;
 	char *readShader(char *filename);
 	void initUniformLocation();

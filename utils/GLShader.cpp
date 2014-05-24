@@ -11,6 +11,60 @@ GLShader::~GLShader()
 {
 	glDeleteProgram(ps);
 }
+GLShader::GLShader(char *csfilename)
+{
+	const char * csSource = (const GLchar *)readShader(csfilename);
+	
+	assert(csSource!=NULL);
+
+	cs = glCreateShader(GL_COMPUTE_SHADER);
+	glShaderSource(cs,1,&csSource,NULL);
+	glCompileShader(cs);
+	GLint result;
+	glGetShaderiv(cs,GL_COMPILE_STATUS,&result);
+	if(GL_FALSE == result)
+	{
+		fprintf(stdout,"cs errro!\n");
+		GLint logLen;
+		glGetShaderiv(cs,GL_INFO_LOG_LENGTH,&logLen);
+		if(logLen >0)
+		{
+			char *log = (char*)malloc(logLen);
+			GLsizei written;
+			glGetShaderInfoLog(cs,logLen,&written,log);
+			fprintf(stdout,"%s\n",log);
+			free(log);
+		}
+	}
+
+	ps = glCreateProgram();
+	glAttachShader(ps,cs);
+
+
+	glLinkProgram(ps);
+	initUniformLocation();
+	int status;
+	glGetProgramiv(ps, GL_LINK_STATUS, &status );
+	if( GL_FALSE == status ) {
+
+		fprintf( stderr, "Failed to link shader program!\n" );
+
+		GLint logLen;
+		glGetProgramiv( ps, GL_INFO_LOG_LENGTH, &logLen );
+
+		if( logLen > 0 )
+		{
+			char * log = (char *)malloc(logLen);
+
+			GLsizei written;
+			glGetProgramInfoLog(ps, logLen, &written, log);
+
+			fprintf(stderr, "Program log: \n%s", log);
+
+			free(log);
+		}
+	}
+}
 GLShader::GLShader(char *vsfilename, char *fsfilename)
 {
 	const char * vsSource = (const GLchar *)readShader(vsfilename);
