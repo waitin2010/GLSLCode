@@ -1,0 +1,29 @@
+#version 430 compatibility
+
+struct BufType
+{
+	int i;
+	float f;
+};
+layout( std140, binding=4 ) buffer Pos 
+{
+	BufType arrayA[ ];  // array of i and f
+};
+layout( std140, binding=5 ) buffer Vel 
+{
+	BufType arrayB[ ];  // array of i and f
+};
+layout( std140, binding=6 ) buffer Col
+{
+	BufType arrayC[ ];  // array of i and f
+};
+layout( local_size_x = 1, local_size_y = 1, local_size_z = 1 ) in;
+void main()
+{
+   uint gid = gl_GlobalInvocationID.x;
+   int i = arrayA[gid].i + arrayB[gid].i;
+   float f = arrayA[gid].f + arrayB[gid].f;
+   arrayC[gid].i = i;
+   arrayC[gid].f = f;
+}
+

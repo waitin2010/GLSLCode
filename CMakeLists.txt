@@ -60,6 +60,7 @@ add_subdirectory (AntTweakBar)
 add_subdirectory (HeightMap)
 add_subdirectory (ComputeShader)
 add_subdirectory (ComputeShader_ParticleSystem)
+add_subdirectory (BasicCompute112GL)
 
 INSTALL(DIRECTORY data DESTINATION "${PROJECT_BINARY_DIR}/bin/Debug")
 INSTALL(DIRECTORY shader DESTINATION "${PROJECT_BINARY_DIR}/bin/Debug")
