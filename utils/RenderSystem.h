@@ -4,4 +4,6 @@
 #include "camera.h"
 #include "GLShader.h"
 #include "Terrain.h"
+#include "QuadTree.h"
+#include "Frustum.h"
 #endif

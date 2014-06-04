@@ -20,6 +20,10 @@ namespace RenderSystem{
 		int vertexCount_;
 		int indexCount_;
 
+		vec3 *position;
+		vec3 *normal;
+		vec2 *textureCoord;
+
 		HeightMapType *heightMap_;
 		//Texture *texture;
 
@@ -32,7 +36,8 @@ namespace RenderSystem{
 		void render();
 		bool initialize(unsigned char* heightMap,int width, int height, char *texturefile);
 		bool release();
-
+		void copyVertexArray(vec3 *position, vec3* normal, vec2 *textureCoord);
+		int getVertexCount();
 	private:
 		bool initBuffer();
 		bool loadHeightMap(unsigned char *heightMap, int width, int height);

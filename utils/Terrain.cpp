@@ -272,9 +272,7 @@ bool Terrain::initialize(unsigned char* heightMap,int width, int height, char *t
 }
 bool Terrain::initBuffer()
 {
-	vec3 *position;
-	vec3 *normal;
-	vec2 *textureCoord;
+	
 	unsigned long* indices;
 	int index, i, j;
 	int index1, index2, index3, index4;
@@ -411,9 +409,20 @@ bool Terrain::initBuffer()
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER,indexCount_*sizeof(unsigned long),indices,GL_STATIC_DRAW);
 	glBindVertexArray(0);
 
-	free(position);
-	free(normal);
-	free(textureCoord);
+	//free(position);
+	//free(normal);
+	//free(textureCoord);
 
 	return true;
+}
+void Terrain::copyVertexArray(vec3 *positionOut, vec3* normalOut, vec2 *textureCoordOut)
+{
+	memcpy(positionOut, position, sizeof(vec3) * vertexCount_);
+	memcpy(normalOut,normal,sizeof(vec3)*vertexCount_);
+	memcpy(textureCoordOut,textureCoord,sizeof(vec2)*vertexCount_);
+	return;
+}
+int Terrain::getVertexCount()
+{
+	return vertexCount_;
 }
