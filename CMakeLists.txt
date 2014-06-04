@@ -63,7 +63,7 @@ add_subdirectory (ComputeShader_ParticleSystem)
 add_subdirectory (BasicCompute112GL)
 #add_subdirectory (OceanCS2GL)
 add_subdirectory (TerrainLighting)
-
+add_subdirectory (TerrainTexturing)
 INSTALL(DIRECTORY data DESTINATION "${PROJECT_BINARY_DIR}/bin/Debug")
 INSTALL(DIRECTORY shader DESTINATION "${PROJECT_BINARY_DIR}/bin/Debug")
 INSTALL(DIRECTORY thirdLib/bin/ DESTINATION "${PROJECT_BINARY_DIR}/bin/Debug")

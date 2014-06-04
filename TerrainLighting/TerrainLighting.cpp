@@ -1,39 +1,6 @@
-/* Learn to use the AntTweakBar GUI For OpenGL
- * Step 1 : include head file
- * Step 2 : initialization
- * Step 3 : create a tweak bar and add variable
- * Step 4 : Draw your tweak bar
- * Step 5 : handle events, and window size change
- * reference: http://anttweakbar.sourceforge.net/doc/tools:anttweakbar:howto
- * Example: example/TwSimpleGLUT.c
-*/
+#include "Dependencies.h"
+#include "RenderSystem.h"
 
-/* the program use AntTweakBar GUI to control the inner color
- * in the demo of GLSL4.0 cookbook.
-*/
-/// OpenGL Library
-#include "gl/glew.h"
-#include "gl/freeglut.h"
-
-/// Mathematics Library for matrix manipulation
-#include "glm/glm.hpp"
-#include "glm/gtc/matrix_transform.hpp"
-#include "glm/gtc/type_ptr.hpp"
-
-/// Shader Class 
-#include "GLShader.h"
-
-#include "Camera.h"
-
-/// OpenGL Texture Library
-#include "SOIL.h"
-#pragma comment(lib, "soil")
-// step 1: AntTweakBar GUI head file
-#include "AntTweakBar.h"
-
-
-
-using namespace glm;
 
 // the innerColor variable
 vec3 innerColor = vec3(125.0,10.0,125.0);//default black.
@@ -44,6 +11,7 @@ int height =320;
 
 /// for camera
 RenderSystem::Camera camera;
+
 vec3 eye_position = vec3(125.0,10.0,125.0);
 vec3 eye_direction = vec3(0.0,0.0,1.0);
 vec3 eye_up = vec3(0.0,1.0,0.0);
@@ -54,6 +22,14 @@ float yAngle;
 GLuint quadVao;
 int count =0;
 GLuint eb;
+
+struct Light
+{
+	vec4 ambient;
+	vec4 diffuse;
+	vec3 direction;
+};
+struct Light light;
 
 bool calculateNormals(vec3 *m_heightMap,int m_terrainWidth, int m_terrainHeight, vec3 *m_heightMapNormal)
 {
@@ -235,6 +211,9 @@ vec3 get_eye_direction(vec3 eye_direction,float xAngle,float yAngle)
 }
 void init()
 {
+	light.ambient = vec4(0.05f, 0.05f, 0.05f, 1.0f);
+	light.diffuse = vec4(1.0f, 1.0f, 1.0f, 1.0f);
+	light.direction = vec3(0.0f, 0.0f, 0.75f);
 	camera.perspective(45.0f,(float)width/height,1.0f,1000.0f);
 	camera.lookat(vec3(125.0,10.0,125.0),glm::vec3(0.0),glm::vec3(0.0,1.0,0.0));
 	int width, height;
@@ -356,6 +335,7 @@ void mouseMove(int x, int y) {
 	TwEventMouseMotionGLUT(x,y);
 	glutPostRedisplay();
 }
+
 void display()
 {
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
@@ -363,9 +343,9 @@ void display()
 	glm::mat4 projection_matrix = camera.getProjectionMatrix();
 	glm::mat4 view_matrix = camera.getViewMatrix();//,vec3(0.0,0.0,0.0),vec3(0.0,1.0,0.0));
 	shader->begin();
-	shader->setUniform("light.ambientColor",vec4(0.05f, 0.05f, 0.05f, 1.0f));
-	shader->setUniform("light.diffuseColor",vec4(1.0f, 1.0f, 1.0f, 1.0f));
-	shader->setUniform("light.lightDirection",vec3(0.0f, 0.0f, 0.75f));
+	shader->setUniform("light.ambientColor",light.ambient);
+	shader->setUniform("light.diffuseColor",light.diffuse);
+	shader->setUniform("light.lightDirection",light.direction);
 	shader->setUniform("projection_matrix",projection_matrix);
 	shader->setUniform("world_matrix",mat4(1.0));
 	shader->setUniform("view_matrix",view_matrix);
@@ -417,9 +397,9 @@ int main(int argc, char **argv)
 	myBar = TwNewBar("NameOffMyTweakBar");
 
 	// Add some variables
-	TwAddVarRW(myBar,"width",TW_TYPE_INT32,&width,"");
-	TwAddVarRW(myBar,"innerColor",TW_TYPE_COLOR3F,&innerColor, "");
-
+	TwAddVarRW(myBar,"diffuse",TW_TYPE_COLOR4F,&light.diffuse,"");
+	TwAddVarRW(myBar,"ambient",TW_TYPE_COLOR4F,&light.ambient, "");
+	TwAddVarRW(myBar,"direction",TW_TYPE_COLOR3F,&light.direction, "");
 	//glutIdleFunc(display);
 	glutMainLoop();
 	return 0;
