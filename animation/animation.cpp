@@ -1,11 +1,12 @@
-#include <GL/glew.h>
-#include <GL/freeglut.h>
+#include "GL/glew.h"
+#include "GL/freeglut.h"
 #include <stdio.h>
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtc/type_ptr.hpp"
 #include "GLShader.h"
 #include "ObjModel.h"
+#include "camera.h"
 #include "vaoQuad.h"
 #include "Directory.h"
 using glm::vec3;
@@ -22,18 +23,20 @@ int height =320;
 Obj *model;
 
 /// for camera
+RenderSystem::Camera camera;
 int xOrigin = -1;
 int yOrigin = -1;
 float xAngle;
 float yAngle;
-
+glm::vec3 eyePos = glm::vec3(4.0,0.0,0.0);
 void init()
 {
+	
+	camera.perspective(45.0f,(float)width/height,1.0f,1000.0f);
+	camera.lookat(eyePos,glm::vec3(0.0),glm::vec3(0.0,1.0,0.0));
 	shader = new GLShader("shader/animation.vert","shader/animation.frag");
 	model = new Obj();
-	char dir[256];
-	sprintf(dir,"%s%s",RelativeDir,"data/cylinder.obj");
-	model->load(dir);
+	model->load("data/cylinder.obj");
 	model->createVao();
 	initQuad();
 	glClearColor(0.0,0.0,0.0,1.0);
@@ -59,7 +62,7 @@ void display()
 	shader->begin();
 
 	/// init shader data
-	glm::vec3 eyePos = glm::vec3(4.0,0.0,0.0);
+	
 
 	// init light in the scene
 	glm::vec3 lightPos = glm::vec3(2.0,0.0,0.0);
@@ -73,13 +76,13 @@ void display()
 	vec3 Ks = vec3(1.0,1.0,0.0);
 	float shiness  = 5.0;
 
-	glm::mat4 projection_matrix = glm::perspective(45.0f,(float)width/height,1.0f,1000.0f);
-	glm::mat4 view_matrix = glm::lookAt(eyePos,glm::vec3(0.0),glm::vec3(0.0,1.0,0.0));
+	glm::mat4 projection_matrix = camera.getProjectionMatrix();
+	glm::mat4 view_matrix = camera.getViewMatrix();
 	view_matrix = glm::rotate(view_matrix,xAngle,glm::vec3(0.0,1.0,0.0));
 	view_matrix = glm::rotate(view_matrix,yAngle,glm::vec3(1.0,0.0,0.0));
 
 	glm::mat4 model_matrix = glm::rotate(glm::mat4(1.0),0.0f,glm::vec3(0.0,1.0,0.0));
-	model_matrix = glm::translate(model_matrix,glm::vec3(-1.0,0.0,0));
+	model_matrix = glm::translate(model_matrix,glm::vec3(-100.0,0.0,0));
 	/// populate shader data to shader
 	shader->setUniform("eyePos",eyePos);
 
@@ -114,6 +117,12 @@ void keyboard(unsigned char key, int x, int y)
 	switch(key){
 	case 27:
 		exit(0);
+		break;
+	case 'w':
+		camera.moveForward(1.0);
+		break;
+	case 's':
+		camera.moveForward(-1.0);
 		break;
 	}
 }

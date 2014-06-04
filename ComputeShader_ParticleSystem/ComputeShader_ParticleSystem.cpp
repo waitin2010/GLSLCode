@@ -222,7 +222,7 @@ void display()
 		glEnableVertexAttribArray(5);
 		glBindBuffer(GL_ARRAY_BUFFER,velSSbo);
 		glVertexAttribPointer(5,3,GL_FLOAT,GL_FALSE,0,NULL);
-		glPointSize(10.0);
+		//glPointSize(10.0);
 		glDrawArrays(GL_POINTS,0,NUM_PARTICLES);
 
 

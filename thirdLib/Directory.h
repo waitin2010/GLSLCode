@@ -1,1 +1,1 @@
-char *RelativeDir = "E:/Project/GLSL4.0Code/build/bin/Debug/";
+char *RelativeDir = "F:/workstation/Projection/GLSL4.0Code/build/bin/Debug/";

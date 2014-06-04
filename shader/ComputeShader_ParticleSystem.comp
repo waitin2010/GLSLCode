@@ -14,7 +14,7 @@ vec4 Colors[ ];  // array of structures
 };
 layout( local_size_x = 128, local_size_y = 1, local_size_z = 1 ) in;
 const vec3 G = vec3( 0., -9.8, 0. );
-const float DT = 0.001;
+const float DT = 0.1;
 #if Bounch
 void main(){
 	uint gid = gl_GlobalInvocationID.x; // the .y and .z are both 1
