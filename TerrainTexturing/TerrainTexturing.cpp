@@ -14,6 +14,7 @@ int height =320;
 /// for camera
 RenderSystem::Camera camera;
 RenderSystem::Terrain terrain;
+SkyBox *skybox;
 
 vec3 eye_position = vec3(125.0,10.0,125.0);
 vec3 eye_direction = vec3(0.0,0.0,1.0);
@@ -71,6 +72,9 @@ GLuint getTextureHandle(char* filename)
 }
 void init()
 {
+	skybox = new SkyBox();
+	skybox->initialize();
+
 	light.ambient = vec4(0.5f, 0.5f, 0.5f, 1.0f);
 	light.diffuse = vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	light.direction = vec3(-0.5f, -1.0f, 0.0f);
@@ -172,6 +176,7 @@ void display()
 	shader->setUniform("terrain",0);
 	terrain.render();
 	shader->end();
+	skybox->render(width,height);
 	/// Step 4: Draw your tweak bar
 	// It must be called just before the frame buffer is presented(swapped).
 	TwDraw();
