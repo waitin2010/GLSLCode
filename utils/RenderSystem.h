@@ -6,4 +6,5 @@
 #include "Terrain.h"
 #include "QuadTree.h"
 #include "Frustum.h"
+#include "Utility.h"
 #endif
