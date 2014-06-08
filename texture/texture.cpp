@@ -1,14 +1,5 @@
-#include <GL/glew.h>
-#include <GL/freeglut.h>
-
-#include "glm/glm.hpp"
-#include "glm/gtc/matrix_transform.hpp"
-#include "glm/gtc/type_ptr.hpp"
-#include "GLShader.h"
-#include "ObjModel.h"
-#include "Directory.h"
-#include "SOIL.h"
-#pragma  comment(lib,"soil")
+#include "Dependencies.h"
+#include "RenderSystem.h"
 
 using glm::vec3;
 using glm::mat4;
@@ -30,70 +21,25 @@ float xAngle;
 float yAngle;
 
 /// texture 
-GLuint brickTexID;
-GLuint mossTexID;
+//GLuint brickTexID;
+//GLuint mossTexID;
+RenderSystem::Texture brick;
+RenderSystem::Texture moss;
 
-int LoadGLTextures(char *file)									// Load Bitmaps And Convert To Textures
-{
-	/* load an image file directly as a new OpenGL texture */
-	 GLuint texID = SOIL_load_OGL_texture
-		(
-		file,
-		SOIL_LOAD_AUTO,
-		SOIL_CREATE_NEW_ID,
-		SOIL_FLAG_MIPMAPS
-		);
-
-	if(texID == 0)
-		return -1;
-
-
-	// Typical Texture Generation Using Data From The Bitmap
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, texID);
-	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-
-	return texID;										// Return Success
-}
-int LoadGLTextureBmp(char *file)
-{
-	/* load an image file directly as a new OpenGL texture */
-	GLuint texID = SOIL_load_OGL_texture
-		(
-		file,
-		SOIL_LOAD_AUTO,
-		SOIL_CREATE_NEW_ID,
-		SOIL_FLAG_MIPMAPS
-		);
-
-	if(texID == 0)
-		return -1;
-
-
-	// Typical Texture Generation Using Data From The Bitmap
-	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, texID);
-	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-
-	return texID;										// Return Success
-}
 void init()
 {
 	shader = new GLShader("shader/texture.vert","shader/texture.frag");
 	model = new Obj();
-	char dir[256];
-	sprintf(dir,"%s%s",RelativeDir,"data/cube.obj");
-	model->load(dir);
+	model->load("data/cube.obj");
 	model->generateTangent();
 	model->createVao();
 	
 	// init texture
-	sprintf(dir,"%s%s",RelativeDir,"data/brick.jpg");
-	brickTexID = LoadGLTextures(dir);
-	sprintf(dir,"%s%s",RelativeDir,"data/moss.png");
-	mossTexID = LoadGLTextureBmp(dir);
+	//brickTexID = LoadGLTextures("data/brick.jpg");
+	//mossTexID = LoadGLTextureBmp("data/moss.png");
+
+	brick.initialize("data/brick.jpg");
+	moss.initialize("data/moss.png");
 	glClearColor(0.0,0.0,0.0,1.0);
 	glEnable(GL_DEPTH_TEST);
 }
@@ -157,11 +103,13 @@ void display()
 	shader->setUniform("model_matrix",model_matrix);
 	
 	glActiveTexture(GL_TEXTURE0);
+	//brick.enable();
 	glBindTexture(GL_TEXTURE_2D,brickTexID);
 	shader->setUniform("brickTex",0);
 
 	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D,mossTexID);
+	moss.enable();
+	//glBindTexture(GL_TEXTURE_2D,mossTexID);
 	shader->setUniform("mossTex",1);
 
 	model->draw();

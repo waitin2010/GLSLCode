@@ -13,8 +13,8 @@ foreach(FILE ${GL_SHADER_GTC})
 source_group("Shader Files" FILES ${SHADER_PATH})
 
 add_executable(${AppName} "${AppName}.cpp" ${SHADER_PATH})
-target_link_libraries(${AppName} Shader)
-target_link_libraries(${AppName} Model)
-
+#target_link_libraries(${AppName} Shader)
+#target_link_libraries(${AppName} Model)
+target_link_libraries(${AppName} ${Library})
 ##INSTALL(DIRECTORY data DESTINATION ${PROJECT_BINARY_DIR})
 #INSTALL(DIRECTORY shader DESTINATION ${PROJECT_BINARY_DIR})
