@@ -170,8 +170,10 @@ void initQuad()
 GLuint quad_vertexbuffer;
 GLuint quad_texturecoord;
 GLuint quad_VertexArrayID;
+GLShader *texture_shader;
 void init_texture_display()
 {
+	texture_shader= new GLShader("shader/shadowmap.vert","shader/shadowmap.frag");
 	glGenVertexArrays(1, &quad_VertexArrayID);
 	glBindVertexArray(quad_VertexArrayID);
 

@@ -12,6 +12,7 @@ extern int LoadGLTextureBmp(char *file);
 extern GLuint quadVao;
 extern void initQuad();
 
+
 extern GLuint quad_VertexArrayID;
 extern void init_texture_display();
 extern void drawTexture(GLuint texture_id,GLShader *shader);
