@@ -5,7 +5,8 @@
 
 extern void renderTexture2D(GLuint texture_id);
 
-extern int LoadGLTextures();
-
+extern int LoadGLTextures(char *filename);
+extern int LoadGLTexturesCube();
+extern int LoadGLTextureBmp(char *file);
 
 #endif

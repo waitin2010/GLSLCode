@@ -9,4 +9,5 @@
 #include "Frustum.h"
 #include "Utility.h"
 #include "SkyBox.h"
+#include "Texture.h"
 #endif

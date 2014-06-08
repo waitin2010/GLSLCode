@@ -27,7 +27,7 @@ void renderTexture2D(GLuint texture_id, GLShader *shader)
 
 }
 
-int LoadGLTextures()									// Load Bitmaps And Convert To Textures
+int LoadGLTexturesCube()									// Load Bitmaps And Convert To Textures
 {
 	/* load an image file directly as a new OpenGL texture */
 	GLuint texID = SOIL_load_OGL_cubemap
@@ -55,4 +55,47 @@ int LoadGLTextures()									// Load Bitmaps And Convert To Textures
 }
 
 
+int LoadGLTextures(char *file)									// Load Bitmaps And Convert To Textures
+{
+	int len = strlen(file);
+	GLuint texID;
+	{
+		texID = SOIL_load_OGL_texture
+			(
+			file,
+			SOIL_LOAD_AUTO,
+			SOIL_CREATE_NEW_ID,
+			SOIL_FLAG_MIPMAPS
+			);
+	}
+	/* load an image file directly as a new OpenGL texture */
+	
 
+	if(texID == 0)
+		return -1;
+
+	return texID;										// Return Success
+}
+int LoadGLTextureBmp(char *file)
+{
+	/* load an image file directly as a new OpenGL texture */
+	GLuint texID = SOIL_load_OGL_texture
+		(
+		file,
+		SOIL_LOAD_AUTO,
+		SOIL_CREATE_NEW_ID,
+		SOIL_FLAG_MIPMAPS
+		);
+
+	if(texID == 0)
+		return -1;
+
+
+	// Typical Texture Generation Using Data From The Bitmap
+//	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, texID);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+
+	return texID;										// Return Success
+}
