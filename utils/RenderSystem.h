@@ -10,4 +10,5 @@
 #include "Utility.h"
 #include "SkyBox.h"
 #include "Texture.h"
+#include "FrameBufferObject.h"
 #endif

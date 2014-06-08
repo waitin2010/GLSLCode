@@ -20,6 +20,7 @@ namespace RenderSystem{
 		void enable();
 		void disable();
 
+		GLuint getTextureID();
 	private:
 		GLuint texture_id_;
 		TextureType texture_type_;

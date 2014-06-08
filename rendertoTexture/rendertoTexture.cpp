@@ -1,20 +1,13 @@
-#include <GL/glew.h>
-#include <GL/freeglut.h>
-
-#include "glm/glm.hpp"
-#include "glm/gtc/matrix_transform.hpp"
-#include "glm/gtc/type_ptr.hpp"
-#include "GLShader.h"
-#include "ObjModel.h"
-#include "Directory.h"
-#include "SOIL.h"
-#pragma  comment(lib,"soil")
+#include "Dependencies.h"
+#include "RenderSystem.h"
 
 using glm::vec3;
 using glm::mat4;
+
 /// shader variables
 GLShader *shader;
 
+RenderSystem::FrameBufferObject fbo;
 
 /// screen size
 int width =320;
@@ -35,157 +28,17 @@ GLuint mossTexID;
 GLuint fboHandle;
 GLuint renderTex;
 
-GLuint quadVao;
-void initQuad()
-{
-	static GLfloat quad[] = {
-		-0.8, -0.8, 0.0,
-		0.8, -0.8,  0.0,
-		-0.8, 0.8,  0.0,
-		0.8, -0.8, 0.0,
-		0.8, 0.8, 0.0,
-		-0.8, 0.8, 0.0
-	};
-	static GLfloat quad_normal[] = {
-		0.0,0.0,1.0,
-		0.0,0.0,1.0,
-		0.0,0.0,1.0,
-		0.0,0.0,1.0,
-		0.0,0.0,1.0,
-		0.0,0.0,1.0,
-		0.0,0.0,1.0
-	};
-	static GLfloat quad_tex_coord[] = {
-		0.0, 0.0, 
-		1.0, 0.0,
-		0.0, 1.0,
-		1.0, 0.0,
-		1.0, 1.0,
-		0.0, 1.0,
-	};
-	GLuint quadID[3];
-	glGenBuffers(3,quadID);
 
-	glBindBuffer(GL_ARRAY_BUFFER,quadID[0]);
-	glBufferData(GL_ARRAY_BUFFER,sizeof(quad),quad,GL_STATIC_DRAW);
-
-	glBindBuffer(GL_ARRAY_BUFFER,quadID[1]);
-	glBufferData(GL_ARRAY_BUFFER,sizeof(quad_normal),quad_normal,GL_STATIC_DRAW);
-
-	glBindBuffer(GL_ARRAY_BUFFER,quadID[2]);
-	glBufferData(GL_ARRAY_BUFFER,sizeof(quad_tex_coord),quad_tex_coord,GL_STATIC_DRAW);
-
-	glGenVertexArrays(1,&quadVao);
-	glBindVertexArray(quadVao);
-
-	glEnableVertexAttribArray(0);
-	glEnableVertexAttribArray(1);
-	glEnableVertexAttribArray(2);
-
-	glBindBuffer(GL_ARRAY_BUFFER,quadID[0]);
-	glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,0,NULL);
-
-	glBindBuffer(GL_ARRAY_BUFFER,quadID[1]);
-	glVertexAttribPointer(1,3,GL_FLOAT,GL_FALSE,0,NULL);
-
-	glBindBuffer(GL_ARRAY_BUFFER,quadID[2]);
-	glVertexAttribPointer(2,2, GL_FLOAT,GL_FALSE,0, NULL);
-}
-void initFBO()
-{
-	
-	
-
-	
-	glGenTextures(1,&renderTex);
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D,renderTex);
-
-	glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,512,512,0,GL_RGBA,GL_UNSIGNED_BYTE,NULL);
-	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE);
-	glBindTexture(GL_TEXTURE_2D,0);
-
-	GLuint depthBuf;
-	glGenRenderbuffers(1,&depthBuf);
-	glBindRenderbuffer(GL_RENDERBUFFER,depthBuf);
-	glRenderbufferStorage(GL_RENDERBUFFER,GL_DEPTH_COMPONENT,512,512);
-	glBindRenderbuffer(GL_RENDERBUFFER,0);
-
-	glGenFramebuffers(1,&fboHandle);
-	glBindFramebuffer(GL_FRAMEBUFFER,fboHandle);
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthBuf);
-	glFramebufferTexture2D(GL_FRAMEBUFFER,GL_COLOR_ATTACHMENT0,GL_TEXTURE_2D,renderTex,0);
-
-	GLenum drawBufs[] = {GL_COLOR_ATTACHMENT0};
-	glDrawBuffers(1,drawBufs);
-	GLenum state =	glCheckFramebufferStatus(GL_FRAMEBUFFER);
-	if(state !=GL_FRAMEBUFFER_COMPLETE)
-		return ;
-	glBindFramebuffer(GL_FRAMEBUFFER,0);
-}
-int LoadGLTextures(char *file)									// Load Bitmaps And Convert To Textures
-{
-	/* load an image file directly as a new OpenGL texture */
-	 GLuint texID = SOIL_load_OGL_texture
-		(
-		file,
-		SOIL_LOAD_AUTO,
-		SOIL_CREATE_NEW_ID,
-		SOIL_FLAG_MIPMAPS
-		);
-
-	if(texID == 0)
-		return -1;
-
-
-	// Typical Texture Generation Using Data From The Bitmap
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, texID);
-	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-
-	return texID;										// Return Success
-}
-int LoadGLTextureBmp(char *file)
-{
-	/* load an image file directly as a new OpenGL texture */
-	GLuint texID = SOIL_load_OGL_texture
-		(
-		file,
-		SOIL_LOAD_AUTO,
-		SOIL_CREATE_NEW_ID,
-		SOIL_FLAG_MIPMAPS
-		);
-
-	if(texID == 0)
-		return -1;
-
-
-	// Typical Texture Generation Using Data From The Bitmap
-	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, texID);
-	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-
-	return texID;										// Return Success
-}
 void init()
 {
 	shader = new GLShader("shader/rendertoTexture.vert","shader/rendertoTexture.frag");
 	model = new Obj();
-	char dir[256];
-	sprintf(dir,"%s%s",RelativeDir,"data/bs_ears.obj");
-	model->load(dir);
+	
+	model->load("data/cube.obj");
 	model->createVao();
-	initFBO();
 	initQuad();
-	// init texture
-	sprintf(dir,"%s%s",RelativeDir,"data/brick.jpg");
-	brickTexID = LoadGLTextures(dir);
+	fbo.initialize();
+	brickTexID = LoadGLTextures("data/brick.jpg");
 	//mossTexID = LoadGLTextureBmp("moss.png");
 	glClearColor(0.0,0.0,0.0,1.0);
 	glEnable(GL_DEPTH_TEST);
@@ -204,9 +57,10 @@ void display()
 {
 	static float angle = 0.0;
 	angle +=0.5;
-	glBindFramebuffer(GL_FRAMEBUFFER,fboHandle);
+	/*glBindFramebuffer(GL_FRAMEBUFFER,fboHandle);
 	glViewport(0,0,512,512);
-	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);*/
+	fbo.begin();
 	shader->begin();
 
 	/// init shader data
@@ -269,7 +123,8 @@ void display()
 
 #if 1
 	/// #pass two 
-	glBindFramebuffer(GL_FRAMEBUFFER,0);
+	//glBindFramebuffer(GL_FRAMEBUFFER,0);
+	fbo.end();
 	glViewport(0,0,width,height);
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 
@@ -281,7 +136,7 @@ void display()
 	shader->setUniform("model_matrix",model_matrix);
 
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D,renderTex);
+	glBindTexture(GL_TEXTURE_2D,fbo.getRenderTexture());
 	shader->setUniform("brickTex",0);
 	
 	glBindVertexArray(quadVao);
