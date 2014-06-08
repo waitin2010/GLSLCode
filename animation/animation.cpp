@@ -119,10 +119,10 @@ void keyboard(unsigned char key, int x, int y)
 		exit(0);
 		break;
 	case 'w':
-		camera.moveForward(1.0);
+		camera.slide(0.0,0.0,-1.0);
 		break;
 	case 's':
-		camera.moveForward(-1.0);
+		camera.slide(0.0,0.0,1.0);
 		break;
 	}
 }

@@ -3,6 +3,7 @@ set (AppName GLSL)
 
 project (${AppName})
 
+set (Library "RenderSystem")
 set (Path "${PROJECT_SOURCE_DIR}")
 set (EXECUTABLE_OUTPUT_PATH "${CMAKE_BINARY_DIR}/bin")
 #configure a header file to pass the directory to the 

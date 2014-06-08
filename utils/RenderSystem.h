@@ -8,5 +8,5 @@
 #include "QuadTree.h"
 #include "Frustum.h"
 #include "Utility.h"
-
+#include "SkyBox.h"
 #endif

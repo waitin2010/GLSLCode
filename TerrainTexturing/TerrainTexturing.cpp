@@ -14,7 +14,7 @@ int height =320;
 /// for camera
 RenderSystem::Camera camera;
 RenderSystem::Terrain terrain;
-SkyBox *skybox;
+RenderSystem::SkyBox *skybox;
 
 vec3 eye_position = vec3(125.0,10.0,125.0);
 vec3 eye_direction = vec3(0.0,0.0,1.0);
@@ -114,16 +114,16 @@ void keyboard(unsigned char key, int x, int y)
 		exit(0);
 			break;
 	case 'w':
-		camera.moveForward(1.0);
+		camera.slide(0.0,0.0,-1.0);
 		break;
 	case 's':
-		camera.moveForward(-1.0);
+		camera.slide(0.0,0.0,1.0);
 		break;
 	case 'a':
-		camera.rotate(1);
+		camera.yaw(-1.0);
 		break;
 	case 'd':
-		camera.rotate(-1);
+		camera.yaw(1.0);
 		break;
 	}
 	/// step 5: handle events and window size changes
