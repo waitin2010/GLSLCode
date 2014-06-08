@@ -14,7 +14,7 @@ SkyBox::~SkyBox()
 void SkyBox::initialize()
 {
 	shader = new GLShader("shader/environmentmap.vert","shader/environmentmap.frag");
-	cubeMapID = LoadGLTextures();
+	cubeMapID = LoadGLTexturesCube();
 }
 
 void SkyBox::render(int width, int height)
