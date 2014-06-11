@@ -16,5 +16,18 @@
 // UI library
 #include "AntTweakBar.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+      #include "lua\lua.h"
+	#include "lua\lauxlib.h"
+	#include "lua\lualib.h"
+ #ifdef __cplusplus
+ }
+ #endif
+
+#pragma comment(lib,"lua")
+
+
 using namespace glm;
 #endif

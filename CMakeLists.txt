@@ -67,6 +67,7 @@ add_subdirectory (TerrainLighting)
 add_subdirectory (TerrainTexturing)
 add_subdirectory (TerrainQuadTree)
 add_subdirectory (demo1)
+add_subdirectory (luaTest)
 
 INSTALL(DIRECTORY data DESTINATION "${PROJECT_BINARY_DIR}/bin/Debug")
 INSTALL(DIRECTORY shader DESTINATION "${PROJECT_BINARY_DIR}/bin/Debug")

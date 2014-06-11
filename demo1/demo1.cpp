@@ -7,6 +7,7 @@
 // the innerColor variable
 vec3 innerColor = vec3(125.0,10.0,125.0);//default black.
 GLShader *shader;
+GLShader *model_shader;
 GLint ps;
 int width =320;
 int height =320;
@@ -18,7 +19,7 @@ RenderSystem::SkyBox *skybox;
 RenderSystem::Texture terrain_texture;
 RenderSystem::FrameBufferObject fbo;
 
-GLShader *texture_shader;
+//GLShader *texture_shader;
 vec3 eye_position = vec3(125.0,10.0,125.0);
 vec3 eye_direction = vec3(0.0,0.0,1.0);
 vec3 eye_up = vec3(0.0,1.0,0.0);
@@ -29,7 +30,7 @@ float yAngle;
 
 int count =0;
 GLuint eb;
-
+Obj *model;
 GLuint textureHandle;
 struct Light
 {
@@ -86,8 +87,8 @@ void init()
 
 	
 	shader = new GLShader("shader/TerrainTexturing.vert","shader/TerrainTexturing.frag");
-
-	texture_shader= new GLShader("shader/shadowmap.vert","shader/shadowmap.frag");
+	model_shader = new GLShader("shader/model.vert","shader/model.frag");
+	//texture_shader= new GLShader("shader/shadowmap.vert","shader/shadowmap.frag");
 	init_texture_display();
 
 	int width, height;
@@ -101,6 +102,10 @@ void init()
 	ps = shader->getProgram();
 
 	fbo.initialize();
+
+	model = new Obj();
+	model->load("data/room_thickwalls.obj");
+	model->createVao();
 
 	glClearColor(0.0,0.0,0.0,1.0);
 	glEnable(GL_DEPTH_TEST);
@@ -136,6 +141,12 @@ void keyboard(unsigned char key, int x, int y)
 		break;
 	case 'd':
 		camera.yaw(1.0);
+		break;
+	case 'u':
+		camera.slide(0.0,1.0,0.0);
+		break;
+	case 'U':
+		camera.slide(0.0,-1.0,0.0);
 		break;
 	}
 	/// step 5: handle events and window size changes
@@ -191,8 +202,16 @@ void display()
 	terrain_texture.enable();
 	shader->setUniform("terrain",0);
 	terrain.render();
-	shader->end();
 	skybox->render(width,height);
+	shader->end();
+	
+	model_shader->begin();
+	model_shader->setUniform("view_matrix",view_matrix);
+	model_shader->setUniform("projection_matrix",projection_matrix);
+	mat4 model_matrix = glm::translate(mat4(1.0),vec3(100.0,10.0,100.0));
+	model_shader->setUniform("model_matrix",model_matrix);
+	model->draw();
+	model_shader->end();
 
 	fbo.begin();
 	glFrontFace(GL_CCW);
@@ -201,6 +220,7 @@ void display()
 	shader->setUniform("light.diffuseColor",light.diffuse);
 	shader->setUniform("light.lightDirection",light.direction);
 	shader->setUniform("projection_matrix",projection_matrix);
+	
 	shader->setUniform("world_matrix",mat4(1.0));
 	shader->setUniform("view_matrix",view_matrix);
 	glActiveTexture(0);
@@ -214,7 +234,8 @@ void display()
 	/// Step 4: Draw your tweak bar
 	// It must be called just before the frame buffer is presented(swapped).
 	//drawTexture(terrain_texture.getTextureID(),texture_shader);
-	drawTexture(fbo.getRenderTexture(),texture_shader);
+	drawTexture(fbo.getRenderTexture());
+	//model->draw();
 	TwDraw();
 	glutSwapBuffers();
 

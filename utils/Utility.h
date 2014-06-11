@@ -14,6 +14,7 @@ extern void initQuad();
 
 
 extern GLuint quad_VertexArrayID;
+extern GLShader *texture_shader;
 extern void init_texture_display();
-extern void drawTexture(GLuint texture_id,GLShader *shader);
+extern void drawTexture(GLuint texture_id);
 #endif

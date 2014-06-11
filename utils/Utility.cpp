@@ -221,16 +221,16 @@ void init_texture_display()
 		NULL
 		);
 }
-void drawTexture(GLuint texture_id,GLShader *shader)
+void drawTexture(GLuint texture_id)
 {
 	glViewport(0,0,256,256);
-	shader->begin();
+	texture_shader->begin();
 	// Bind our texture in Texture Unit 0
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, texture_id);
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_COMPARE_MODE,GL_NONE);
 	// Set our "renderedTexture" sampler to user Texture Unit 0
-	shader->setUniform("tex", 0);
+	texture_shader->setUniform("tex", 0);
 
 	// 1rst attribute buffer : vertices 
 	
@@ -240,5 +240,5 @@ void drawTexture(GLuint texture_id,GLShader *shader)
 	glBindVertexArray(quad_VertexArrayID);
 	glDrawArrays(GL_TRIANGLES, 0, 6); // 2*3 indices starting at 0 -> 2 triangles
 
-	shader->end();
+	texture_shader->end();
 }
